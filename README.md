@@ -1,6 +1,14 @@
 # How-To-Shower
 Complete guid for programmers how to shower
 
+# How to use shower
+1. Turn on the water and make sure it's not too hot or too cold.
+2. Get wet all over. (Important!!!)
+3. Use soap and shampoo to wash your body and hair.
+4. Rinse off all the soap and shampoo.
+5. Dry yourself off with a towel.
+6. Put on clean clothes.
+
 # For advance shower takers
 Optimize their shower routine for maximum efficiency and productivity:
 
