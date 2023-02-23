@@ -1,7 +1,7 @@
 # How-To-Shower
 Complete guid for programmers how to shower
 
-##For advance shower takers
+# For advance shower takers
 Optimize their shower routine for maximum efficiency and productivity:
 
 Set a shower schedule: Programmers often work long hours, which can make it easy to skip showers. However, setting a shower schedule can help you stay fresh and focused. Decide on a time that works for you, whether it's in the morning, after a workout, or before bed.
