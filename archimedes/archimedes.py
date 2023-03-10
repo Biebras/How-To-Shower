@@ -1,5 +1,6 @@
 #%%
 from PIL import Image
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -9,14 +10,15 @@ np.set_printoptions(threshold=np.inf)
 class Archimedes:
     def __init__(self):
         self.imagePath = "../artwork/archimedes.png"
-        self.clean_color = [194, 161, 126, 255]
-        self.dirty_color = [51, 45, 61, 255]
-        self.empty_color = [255, 255, 255, 255]
+        self.clean_color = [194, 161, 126]
+        self.dirty_color = [51, 45, 61]
+        self.empty_color = [255, 255, 255]
         self.image = Image.open(self.imagePath)
+        self.image = self.image.convert('RGB')
         self.body = np.array(self.image)
         self.rowCount = self.body.shape[0]
         self.colCount = self.body.shape[1]
-        self.start_pos = (5, 66)
+        self.start_pos = (5, 55)
         
     def get_start(self):
         return self.start_pos
@@ -57,9 +59,10 @@ class Archimedes:
         
 
 def clean_body_bfs():
-    fig, ax = plt.subplots()
     arch = Archimedes()
-    ims = []
+    frames = []
+    frames.append(np.array(arch.body))
+    print(arch.body.shape)
     
     #init visited cells to False
     visited = {}
@@ -76,24 +79,26 @@ def clean_body_bfs():
     while queue:
         start = queue.pop(0)
         arch.clean_skin(start[0], start[1])
+        frames.append(np.array(arch.body))
         
         for neighbour in arch.get_skin_neighbors(start[0], start[1]):
             pos = (neighbour[0], neighbour[1])
             if visited[pos] == False:
                 queue.append(pos)
                 visited[pos] = True
-                
-        im = ax.imshow(arch.body, animated=True)
-        ims.append([im])
-                
-    arch.draw()
     
-    ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
-                                repeat_delay=1000)
+    #arch.draw()
+    frames.append(np.array(arch.body))
+    width = arch.colCount
+    height = arch.rowCount
+    out = cv2.VideoWriter('video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 4000, (width, height))
+
+    for frame in frames:
+        frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_NEAREST)
+        out.write(frame)
+
+    out.release()
     
-    writer = animation.FFMpegWriter(
-    fps=15, metadata=dict(artist='Me'), bitrate=1800)
-    ani.save("movie.mp4", writer=writer)
 
     
 clean_body_bfs()
