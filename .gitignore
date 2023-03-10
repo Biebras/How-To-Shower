@@ -1,5 +1,11 @@
+# Ignore _pycache__ folders
+**/__pycache__/
+
+# Ignore .DS_Store filrs
 **/.DS_Store
 
+#ignore mp4 files
 **/*.mp4
 
-**/__pycache__
+#ignore .pytest_cache files
+**/.pytest_cache
