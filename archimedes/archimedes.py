@@ -3,9 +3,6 @@ from PIL import Image
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-
-np.set_printoptions(threshold=np.inf)
 
 class Archimedes:
     def __init__(self):
@@ -18,10 +15,10 @@ class Archimedes:
         self.body = np.array(self.image)
         self.rowCount = self.body.shape[0]
         self.colCount = self.body.shape[1]
-        self.start_pos = (5, 55)
+        self.frames = []
         
-    def get_start(self):
-        return self.start_pos
+    def record_frame(self):
+        self.frames.append(np.array(self.body))
         
     def clean_skin(self, row, col):
         if self.is_skin(row, col) == False:
@@ -29,6 +26,7 @@ class Archimedes:
             return False
         
         self.body[row][col] = self.clean_color
+        self.record_frame()
         return True
         
     def is_skin(self, row, col):
@@ -57,51 +55,17 @@ class Archimedes:
     def draw(self):
         plt.imshow(self.body)
         
+    def generate_video(self, filename):
+        width = self.colCount
+        height = self.rowCount
+        fps = 5000
+        out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
-def clean_body_bfs():
-    arch = Archimedes()
-    frames = []
-    frames.append(np.array(arch.body))
-    print(arch.body.shape)
-    
-    #init visited cells to False
-    visited = {}
-    for col in range(arch.colCount):
-        for row in range(arch.rowCount):
-            visited[(row, col)] = False
-    
-    start_pos = arch.get_start()
-    
-    queue = []
-    queue.append(start_pos)
-    visited[start_pos] = True
-    
-    while queue:
-        start = queue.pop(0)
-        arch.clean_skin(start[0], start[1])
-        frames.append(np.array(arch.body))
-        
-        for neighbour in arch.get_skin_neighbors(start[0], start[1]):
-            pos = (neighbour[0], neighbour[1])
-            if visited[pos] == False:
-                queue.append(pos)
-                visited[pos] = True
-    
-    #arch.draw()
-    frames.append(np.array(arch.body))
-    width = arch.colCount
-    height = arch.rowCount
-    out = cv2.VideoWriter('video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 4000, (width, height))
+        for frame in self.frames:
+            frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_NEAREST)
+            out.write(frame)
 
-    for frame in frames:
-        frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_NEAREST)
-        out.write(frame)
-
-    out.release()
-    
-
-    
-clean_body_bfs()
+        out.release()
     
     
 
